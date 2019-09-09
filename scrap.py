@@ -33,16 +33,16 @@ def scrape():
     discipline_names = []
 
     #extraindo do html os codigos das disciplinas
-    for i in range(len(table_list)):
-        for table_row in table_list:
-            td = table_row.find("td").text
+    for table in table_list:
+        tr_list = table.findAll("tr")
+        tr_list.remove(tr_list[0])
+        for tr in tr_list:
+            td = tr.find("td").text
             discipline_code_list.append(td)
-
-    #extraindo do html os nomes das disciplinas
-    for i in range(len(table_list)):
-        for discipline in table_list:
-            discipline_name = discipline.find("a").text
+            discipline_name = tr.find("a").text
             discipline_names.append(" ".join(discipline_name.split()))
+
+
 
     disciplines = []
     for i in range(len(discipline_names)):
@@ -50,7 +50,6 @@ def scrape():
         temp['Nome'] = discipline_names[i]
         temp['Codigo'] = discipline_code_list[i]
         disciplines.append(temp)
-
 
     dict_to_csv('disciplines.csv', disciplines)
     return pd.read_csv("disciplines.csv")
